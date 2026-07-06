@@ -1,0 +1,400 @@
+# Static-site generator for primum.co.za — run `python build.py` to regenerate
+# all pages from the shared template. No dependencies.
+import io, json
+
+SITE = "https://www.primum.co.za"
+EMAIL = "admin@primum.co.za"
+PHONE = "073 653 1650"          # from practice settings — confirm before go-live
+PHONE_INTL = "+27736531650"
+
+PAGES = {
+    "index.html":     ("Home", "/"),
+    "employers.html": ("For Employers", "/employers.html"),
+    "practices.html": ("For Medical Practices", "/practices.html"),
+    "schemes.html":   ("For Schemes & Funders", "/schemes.html"),
+    "members.html":   ("For Patients & Members", "/members.html"),
+    "about.html":     ("About", "/about.html"),
+    "contact.html":   ("Contact", "/contact.html"),
+    "privacy.html":   ("Privacy (POPIA)", "/privacy.html"),
+}
+
+def header(active):
+    links = [
+        ("index.html", "Home"), ("employers.html", "Employers"),
+        ("practices.html", "Practices"), ("schemes.html", "Schemes"),
+        ("members.html", "Members"), ("about.html", "About"),
+    ]
+    nav = "".join(
+        f'<a href="{h}"{" class=\"active\"" if h == active else ""}>{t}</a>'
+        for h, t in links
+    )
+    return f'''<header>
+  <div class="nav-wrap">
+    <a class="brand" href="index.html">
+      <img src="assets/logo.jpg" alt="Primum Health Group logo">
+      <span><span class="brand-name">Primum Health Group</span><br><span class="brand-sub">Occupational Health &middot; Care Coordination</span></span>
+    </a>
+    <nav class="main-nav">{nav}<a class="cta" href="contact.html">Contact us</a></nav>
+  </div>
+</header>'''
+
+FOOTER = f'''<footer>
+  <div class="footer-inner">
+    <div>
+      <h4>Primum Health Group</h4>
+      <p>Occupational health and care-coordination practice serving employers, medical practices, schemes and their members across South Africa.</p>
+    </div>
+    <div>
+      <h4>Who we serve</h4>
+      <ul>
+        <li><a href="employers.html">Employers</a></li>
+        <li><a href="practices.html">Medical practices</a></li>
+        <li><a href="schemes.html">Schemes &amp; funders</a></li>
+        <li><a href="members.html">Patients &amp; members</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="privacy.html">Privacy &amp; POPIA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:{EMAIL}">{EMAIL}</a></li>
+        <li><a href="tel:{PHONE_INTL}">{PHONE}</a></li>
+        <li><span class="placeholder">[PRACTICE ADDRESS]</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Primum Health Group. All rights reserved.</span>
+    <span>Registered healthcare practice &middot; <span class="placeholder">[HPCSA / PRACTICE NO]</span> &middot; POPIA compliant</span>
+  </div>
+</footer>'''
+
+def page(fname, title, desc, body, jsonld=None, active=None):
+    ld = ""
+    if jsonld:
+        ld = '\n'.join(f'<script type="application/ld+json">{json.dumps(j, ensure_ascii=False)}</script>' for j in jsonld)
+    html = f'''<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta name="description" content="{desc}">
+<link rel="canonical" href="{SITE}{PAGES[fname][1]}">
+<link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{desc}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{SITE}{PAGES[fname][1]}">
+<meta property="og:image" content="{SITE}/assets/logo.jpg">
+<link rel="stylesheet" href="assets/styles.css">
+{ld}
+</head>
+<body>
+{header(active or fname)}
+<main>
+{body}
+</main>
+{FOOTER}
+</body>
+</html>'''
+    io.open(fname, "w", encoding="utf-8", newline="\n").write(html)
+    print("wrote", fname)
+
+ORG_LD = {
+  "@context": "https://schema.org",
+  "@type": "MedicalBusiness",
+  "name": "Primum Health Group",
+  "url": SITE,
+  "logo": f"{SITE}/assets/logo.jpg",
+  "email": EMAIL,
+  "telephone": PHONE_INTL,
+  "areaServed": "ZA",
+  "description": "South African occupational-health and care-coordination practice. We manage employee and patient populations for employers, medical practices and schemes — turning each member's actual medical-aid benefits into a scheduled, billable year plan of care.",
+  "medicalSpecialty": ["Occupational medicine", "Preventive medicine", "Community health"],
+  "knowsAbout": ["Occupational health", "COIDA compliance", "Medical incapacity assessment", "Care coordination", "Chronic disease management", "Prescribed Minimum Benefits", "Oncology care pathways", "Employee wellness"]
+}
+
+def faq_ld(pairs):
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}}
+        for q, a in pairs
+      ]
+    }
+
+def faqs_html(pairs):
+    return "".join(f'<details class="faq"><summary>{q}</summary><p>{a}</p></details>' for q, a in pairs)
+
+# ─────────────────────────── HOME ───────────────────────────
+home_faqs = [
+  ("What does Primum Health Group do?",
+   "Primum Health Group is a South African occupational-health and care-coordination practice. We run workplace health programmes for employers (medicals, surveillance, COIDA, incapacity management) and coordinate ongoing healthcare for patient populations — building each member a year plan of screenings, chronic-care visits and tests based on what their medical aid actually covers, with the correct billing codes ready for the treating doctor."),
+  ("What is care coordination?",
+   "Care coordination means one accountable team makes sure every patient actually receives the care they are due — the right screenings for their age and gender, the right chronic-disease check-ups for their conditions, at the right time — and that every visit is billed correctly to the medical scheme benefit that must pay for it, not the member's pocket."),
+  ("Who does Primum work with?",
+   "Employers who need occupational health and employee wellness; GP and specialist practices who want their patient base proactively managed; medical schemes and funders seeking better benefit utilisation and outcomes; and the members themselves."),
+]
+home = f'''
+<section class="hero">
+  <div class="hero-inner">
+    <span class="kicker">Occupational Health &middot; Care Coordination &middot; Population Health</span>
+    <h1>Every member gets the care they're due — <em>billed right, on time, every year.</em></h1>
+    <p class="lead">Primum Health Group is a South African occupational-health and care-coordination practice. We manage employee and patient populations for employers, medical practices and schemes — turning each member's actual medical-aid benefits into a scheduled, billable year plan of care.</p>
+    <div class="actions">
+      <a class="btn btn-gold" href="contact.html">Talk to us</a>
+      <a class="btn btn-ghost" href="#how">How it works</a>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="section-inner">
+    <h2 class="section-title">One practice, four stakeholders</h2>
+    <p class="section-sub">Healthcare fails in the gaps between employer, doctor, scheme and member. We sit in those gaps.</p>
+    <div class="grid grid-2">
+      <div class="card"><span class="tag">Employers</span><h3>Workplace health that stands up to audit</h3><p>Pre-employment and exit medicals, medical surveillance, COIDA claims management, incapacity and disability assessments, and employee-wellness populations managed on a simple per-member basis.</p><ul class="checks"><li>Fitness certificates &amp; surveillance programmes</li><li>COIDA compliance and claims, end to end</li><li>Absenteeism &amp; incapacity management</li></ul><p style="margin-top:.8rem"><a href="employers.html"><b>For employers →</b></a></p></div>
+      <div class="card"><span class="tag">Medical practices</span><h3>We tell you who is due, for what — with the codes</h3><p>We coordinate your patient base on your behalf: every chronic patient and every screening-eligible member gets a year plan, and you receive referrals with the exact tariff codes and ICD-10 ready for your billing system.</p><ul class="checks"><li>Year plans per patient, by age, gender &amp; diagnosis</li><li>Billing-code-ready referrals (tariff + ICD-10 in claim order)</li><li>Recalls, reminders and results follow-up handled</li></ul><p style="margin-top:.8rem"><a href="practices.html"><b>For practices →</b></a></p></div>
+      <div class="card"><span class="tag">Schemes &amp; funders</span><h3>Benefits used correctly — outcomes you can measure</h3><p>PMB-correct claiming, screening-benefit utilisation and structured chronic &amp; oncology pathways that keep members healthier and claims cleaner.</p><ul class="checks"><li>PMB / CDL coordination across 7+ scheme groups</li><li>Screening-basket utilisation, not wastage</li><li>ERAS-aligned oncology prehab &amp; rehab pathways</li></ul><p style="margin-top:.8rem"><a href="schemes.html"><b>For schemes →</b></a></p></div>
+      <div class="card"><span class="tag">Patients &amp; members</span><h3>Your health, scheduled</h3><p>A personal year plan of the check-ups, screenings and chronic care you are entitled to — much of it already paid for by your medical aid — with reminders so nothing gets missed.</p><ul class="checks"><li>Know what your plan already covers</li><li>Chronic conditions monitored properly</li><li>Support through cancer treatment, before and after surgery</li></ul><p style="margin-top:.8rem"><a href="members.html"><b>For members →</b></a></p></div>
+    </div>
+
+    <div class="band">
+      <div class="stat"><b>27 chronic conditions</b><span>PMB Chronic Disease List coordinated, plus scheme-specific extended lists</span></div>
+      <div class="stat"><b>7+ scheme groups</b><span>Discovery, Bonitas, GEMS, Polmed, Momentum, Medshield, Affinity</span></div>
+      <div class="stat"><b>Billing-code ready</b><span>Every activity carries the tariff code and ICD-10 in claim order</span></div>
+      <div class="stat"><b>POPIA compliant</b><span>Role-based access, audit-trailed, consent-first data handling</span></div>
+    </div>
+
+    <div class="cta-strip">
+      <div><h3>See what coordinated care looks like for your people.</h3><p>Employers, practices and funders: book a walkthrough of our platform and pathways.</p></div>
+      <a class="btn btn-navy" href="contact.html">Book a conversation</a>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="section-inner">
+    <h2 class="section-title">Common questions</h2>
+    {faqs_html(home_faqs)}
+  </div>
+</section>
+'''
+page("index.html",
+     "Primum Health Group — Occupational Health & Care Coordination, South Africa",
+     "South African occupational-health and care-coordination practice. We manage employee and patient populations for employers, practices and schemes — year plans, correct billing, better outcomes.",
+     home, [ORG_LD, faq_ld(home_faqs)])
+
+# ─────────────────────── EMPLOYERS ───────────────────────
+emp_faqs = [
+  ("What occupational health services do employers get?",
+   "Pre-employment, periodic and exit medicals; fitness-for-duty certificates; medical surveillance programmes matched to your risk exposures; COIDA (Workmen's Compensation) compliance and claims management; and medical incapacity and disability assessments with defensible reports."),
+  ("What is COIDA claims management?",
+   "When an employee is injured on duty, we handle the Compensation for Occupational Injuries and Diseases Act process end to end — first medical reports, ongoing treatment coordination, final assessments and disability ratings — so the claim is compliant and the employee returns to work safely."),
+  ("How does employee wellness work on a per-member basis?",
+   "Your workforce is enrolled as a managed population. Every employee gets an annual wellness assessment and a personal year plan; those with chronic conditions get structured care. You get aggregate reporting — never individual medical detail without consent — at a predictable per-member monthly rate."),
+]
+employers = f'''
+<div class="page-hero"><div class="section-inner"><h1>Workplace health that protects your people — and your compliance file</h1><p>From fitness certificates to COIDA claims to a managed employee-wellness population: one accountable practice, predictable costs, defensible paperwork.</p></div></div>
+<section><div class="section-inner">
+  <div class="grid grid-3">
+    <div class="card"><span class="tag">Medicals</span><h3>Occupational medicals &amp; surveillance</h3><ul class="checks"><li>Pre-employment, periodic &amp; exit medicals</li><li>Fitness-for-duty certificates</li><li>Risk-based surveillance (audiometry, spirometry, vision)</li><li>Legal-register-aligned programmes</li></ul></div>
+    <div class="card"><span class="tag">COIDA</span><h3>Injury-on-duty &amp; claims</h3><ul class="checks"><li>COIDA registration &amp; compliance</li><li>First medical &amp; progress reports</li><li>Claims submission &amp; follow-through</li><li>Return-to-work coordination</li></ul></div>
+    <div class="card"><span class="tag">Incapacity</span><h3>Incapacity &amp; disability assessment</h3><ul class="checks"><li>Medical incapacity evaluations</li><li>Disability ratings &amp; reports</li><li>Case management with HR &amp; insurers</li><li>Medico-legal grade documentation</li></ul></div>
+  </div>
+  <div class="card" style="margin-top:1.2rem"><span class="tag">Population wellness</span><h3>Your workforce as a managed health population</h3><p>Beyond compliance: we enrol your employees into coordinated care. Every member gets an annual wellness check and a year plan; chronic conditions get proper ongoing management; screenings their medical aid already pays for actually happen. You see the aggregate picture — participation, risk trends, absenteeism drivers — at a predictable per-member monthly rate.</p></div>
+  <div class="cta-strip"><div><h3>Get a workplace-health proposal</h3><p>Tell us your headcount and industry — we'll map the programme and the price.</p></div><a class="btn btn-navy" href="contact.html">Request a proposal</a></div>
+  <h2 class="section-title" style="margin-top:2.6rem">Employer questions</h2>
+  {faqs_html(emp_faqs)}
+</div></section>
+'''
+page("employers.html",
+     "Occupational Health for Employers — COIDA, Medicals, Incapacity | Primum Health Group",
+     "Occupational medicals, surveillance, COIDA claims management, incapacity assessments and managed employee-wellness populations for South African employers.",
+     employers, [faq_ld(emp_faqs)])
+
+# ─────────────────────── PRACTICES ───────────────────────
+pr_faqs = [
+  ("What does Primum actually do for my practice?",
+   "We coordinate your patient population on your behalf. Every chronic and screening-eligible patient gets a year plan built from their actual medical-aid benefits; we handle recalls and reminders; and you receive referrals listing exactly who is due, for what, with the tariff codes and ICD-10 codes ready to capture in your billing system."),
+  ("How do the billing codes work?",
+   "Every activity we schedule carries the procedure/tariff code and the ICD-10 codes in the correct claim order — PMB codes first, so chronic and oncology claims route to the scheme's risk pool instead of the member's savings. Your reception captures the claim exactly as printed on our referral."),
+  ("Does this cost my practice anything?",
+   "The model is simple: your patients get more of the care they are already entitled to, your practice bills for that care, and the coordination is funded through the population arrangement. We'll walk you through the numbers for your patient base."),
+]
+practices = f'''
+<div class="page-hero"><div class="section-inner"><h1>We tell you who is due, for what — with the billing codes ready</h1><p>Your patients, proactively managed. Chronic check-ups, screenings and pathway care scheduled for the whole practice population — and every referral arrives claim-ready.</p></div></div>
+<section><div class="section-inner">
+  <div class="grid grid-3">
+    <div class="card"><span class="tag">Year plans</span><h3>A plan per patient</h3><p>Built from age, gender, diagnoses and — crucially — what the patient's specific plan option actually covers, across Discovery, Bonitas, GEMS, Polmed, Momentum, Medshield and Affinity.</p></div>
+    <div class="card"><span class="tag">Claim-ready referrals</span><h3>Codes, not guesswork</h3><p>Tariff code + ICD-10 in claim order on every line. PMB codes first so chronic care hits the risk pool. A printable billing quick-reference for your front desk.</p></div>
+    <div class="card"><span class="tag">Follow-through</span><h3>Recalls &amp; results, handled</h3><p>We chase the recalls, remind the patients, track the results, and flag what needs your clinical attention — so no chronic patient quietly falls out of care.</p></div>
+  </div>
+  <div class="card" style="margin-top:1.2rem"><span class="tag">Clinical pathways</span><h3>Oncology prehab &amp; rehab, ERAS-aligned</h3><p>For patients diagnosed with cancer, we run a structured pathway anchored to the treatment date: prehabilitation (anaemia correction, nutrition, exercise, cessation, stoma education), perioperative coordination, recovery, and five-year surveillance — every activity billable, every code verified. Colorectal follows the full ERAS surgical protocol; other tumours run a structured oncology backbone.</p></div>
+  <div class="cta-strip"><div><h3>See a sample year plan and referral</h3><p>Bring one anonymised patient profile — we'll show you the plan and the claim lines.</p></div><a class="btn btn-navy" href="contact.html">Book a demo</a></div>
+  <h2 class="section-title" style="margin-top:2.6rem">Practice questions</h2>
+  {faqs_html(pr_faqs)}
+</div></section>
+'''
+page("practices.html",
+     "Care Coordination for Medical Practices — Claim-Ready Referrals | Primum Health Group",
+     "We manage your patient population: year plans per patient, recalls handled, referrals with tariff and ICD-10 codes ready for your billing system.",
+     practices, [faq_ld(pr_faqs)])
+
+# ─────────────────────── SCHEMES ───────────────────────
+sc_faqs = [
+  ("How does coordination help a scheme or funder?",
+   "Members who receive their preventive screenings and structured chronic care cost less over time and claim more correctly. We drive utilisation of the benefits schemes already fund — screening baskets, chronic programmes, oncology benefits — with PMB-correct coding that keeps claims clean."),
+  ("What is PMB-correct claiming?",
+   "Prescribed Minimum Benefit conditions must by law be funded from scheme risk. We ensure every chronic and oncology claim carries the PMB ICD-10 code in the primary position, so claims route correctly the first time — fewer rejections, fewer member complaints, cleaner data."),
+]
+schemes = f'''
+<div class="page-hero"><div class="section-inner"><h1>Benefit utilisation you designed — actually delivered</h1><p>Screening baskets used, chronic members managed, oncology pathways followed, claims coded correctly. Coordination turns benefit design into member outcomes.</p></div></div>
+<section><div class="section-inner">
+  <div class="grid grid-3">
+    <div class="card"><span class="tag">Prevention</span><h3>Screening-basket utilisation</h3><p>Age- and gender-appropriate screening scheduled for every eligible member — mammography, cervical, colorectal, PSA, HIV, wellness checks — against each option's actual benefit rules.</p></div>
+    <div class="card"><span class="tag">Chronic</span><h3>CDL &amp; extended chronic care</h3><p>All 27 PMB chronic conditions plus scheme-specific extended lists, managed to protocol with correct combination coding and DSP alignment.</p></div>
+    <div class="card"><span class="tag">Oncology</span><h3>Structured cancer pathways</h3><p>ERAS-aligned prehabilitation and rehabilitation around treatment, plus guideline-cadence surveillance (markers, imaging, scopes) for five years — coordinated, coded, auditable.</p></div>
+  </div>
+  <div class="cta-strip"><div><h3>Pilot a population with us</h3><p>Pick a cohort — an employer group or a chronic register — and measure the difference.</p></div><a class="btn btn-navy" href="contact.html">Start the conversation</a></div>
+  <h2 class="section-title" style="margin-top:2.6rem">Funder questions</h2>
+  {faqs_html(sc_faqs)}
+</div></section>
+'''
+page("schemes.html",
+     "Care Coordination for Medical Schemes & Funders | Primum Health Group",
+     "PMB-correct claiming, screening-benefit utilisation and structured chronic and oncology pathways that improve member outcomes and claims quality.",
+     schemes, [faq_ld(sc_faqs)])
+
+# ─────────────────────── MEMBERS ───────────────────────
+me_faqs = [
+  ("What do I get as a member?",
+   "A personal year plan: the check-ups, screenings, blood tests and chronic-care visits you should have this year, scheduled month by month — with reminders. Much of it is already paid for by your medical aid; we make sure you actually receive it."),
+  ("Does my medical aid pay for this care?",
+   "Most of what we schedule is covered: preventive screenings from your plan's screening benefit, chronic care from the Chronic Disease List benefit the law requires your scheme to fund, and cancer care from the oncology benefit. Where something is not covered, we tell you the cost upfront — no surprises."),
+  ("Is my health information safe?",
+   "Yes. We are POPIA compliant: your information is processed with your consent, access is role-based and audit-trailed, and we never share individual medical details with your employer."),
+]
+members = f'''
+<div class="page-hero"><div class="section-inner"><h1>Your health, scheduled — nothing you're entitled to gets missed</h1><p>A personal year plan of check-ups, screenings and chronic care, built from what your medical aid actually covers. We remind you, book you, and follow up on results.</p></div></div>
+<section><div class="section-inner">
+  <div class="grid grid-3">
+    <div class="card"><span class="tag">Prevention</span><h3>Screenings on time</h3><p>The right screening for your age and stage — wellness checks, mammograms, pap smears, colon screening, PSA, HIV testing — mostly free under your plan's screening benefit.</p></div>
+    <div class="card"><span class="tag">Chronic care</span><h3>Conditions managed properly</h3><p>Diabetes, blood pressure, asthma, HIV and 20+ other chronic conditions monitored to protocol — the visits and blood tests your condition needs, when it needs them.</p></div>
+    <div class="card"><span class="tag">Cancer support</span><h3>Before and after treatment</h3><p>A structured pathway around cancer surgery or treatment: getting you strong beforehand (nutrition, exercise, iron levels), supporting recovery, and five years of proper follow-up.</p></div>
+  </div>
+  <div class="cta-strip"><div><h3>Ask about joining</h3><p>Through your employer, your doctor's practice — or directly as an individual member.</p></div><a class="btn btn-navy" href="contact.html">Get in touch</a></div>
+  <h2 class="section-title" style="margin-top:2.6rem">Member questions</h2>
+  {faqs_html(me_faqs)}
+</div></section>
+'''
+page("members.html",
+     "Care Coordination for Patients & Members | Primum Health Group",
+     "A personal year plan of screenings, check-ups and chronic care built from your medical-aid benefits — with reminders so nothing gets missed.",
+     members, [faq_ld(me_faqs)])
+
+# ─────────────────────── ABOUT ───────────────────────
+about = f'''
+<div class="page-hero"><div class="section-inner"><h1>Primary health. Occupational health. Medico-legal. Coordinated.</h1><p>Primum Health Group is a doctor-led South African practice built on a simple conviction: most of the care people need is already funded — it just never gets coordinated. We fix that.</p></div></div>
+<section><div class="section-inner">
+  <div class="grid grid-2">
+    <div class="card"><h3>What we believe</h3><p>Benefits without coordination are promises without delivery. A member with diabetes is entitled by law to structured chronic care; a 50-year-old is entitled to cancer screening; an injured worker is entitled to a properly managed COIDA claim. Our job is to make entitlement become appointment — scheduled, delivered, correctly billed.</p></div>
+    <div class="card"><h3>How we work</h3><p>Our own care-coordination platform understands the benefit rules of South Africa's major schemes and options, generates a year plan per member, and produces claim-ready referrals for treating providers. Clinical pathways follow published guidelines (ERAS, NCCN/ESMO); billing follows verified tariff conventions; data handling follows POPIA.</p></div>
+    <div class="card"><h3>Leadership</h3><p><span class="placeholder">[FOUNDER NAME &amp; QUALIFICATIONS]</span> — <span class="placeholder">[SHORT BIO: registration, experience, special interests]</span></p></div>
+    <div class="card"><h3>Credentials</h3><ul class="checks"><li>Registered practice: <span class="placeholder">[HPCSA / BHF PRACTICE NO]</span></li><li>POPIA-compliant systems: role-based access, audit trail, consent-first</li><li>Schemes worked with: Discovery, Bonitas, GEMS, Polmed, Momentum, Medshield, Affinity</li></ul></div>
+  </div>
+</div></section>
+'''
+page("about.html",
+     "About Primum Health Group — Doctor-Led Care Coordination, South Africa",
+     "A doctor-led South African practice combining occupational health, primary care coordination and medico-legal work — delivered through our own POPIA-compliant platform.",
+     about, [ORG_LD])
+
+# ─────────────────────── CONTACT ───────────────────────
+contact = f'''
+<div class="page-hero"><div class="section-inner"><h1>Talk to us</h1><p>Employers, practices, funders and members — tell us who you are and what you need; we respond within one business day.</p></div></div>
+<section><div class="section-inner">
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Direct contact</h3>
+      <ul class="checks">
+        <li>Email: <a href="mailto:{EMAIL}"><b>{EMAIL}</b></a></li>
+        <li>Phone / WhatsApp: <a href="https://wa.me/27736531650"><b>{PHONE}</b></a></li>
+        <li>Practice address: <span class="placeholder">[PRACTICE ADDRESS + CITY]</span></li>
+        <li>Hours: <span class="placeholder">[e.g. Mon–Fri 08:00–17:00]</span></li>
+      </ul>
+      <p style="margin-top:.9rem;font-size:.85rem;color:#64748b">Existing coordination clients: your care coordinator remains your first contact.</p>
+    </div>
+    <div class="card">
+      <h3>What to include</h3>
+      <ul class="checks">
+        <li><b>Employers:</b> headcount, industry, sites, current occ-health arrangements</li>
+        <li><b>Practices:</b> practice size, patient-base profile, billing system used</li>
+        <li><b>Funders:</b> the population or register you'd like to pilot</li>
+        <li><b>Members:</b> your scheme &amp; option name (no medical details by email, please)</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+'''
+page("contact.html",
+     "Contact Primum Health Group",
+     "Contact Primum Health Group — occupational health and care coordination. Email admin@primum.co.za or WhatsApp us.",
+     contact, [ORG_LD])
+
+# ─────────────────────── PRIVACY ───────────────────────
+privacy = f'''
+<div class="page-hero"><div class="section-inner"><h1>Privacy &amp; POPIA</h1><p>How Primum Health Group processes personal and special personal information under the Protection of Personal Information Act, 2013.</p></div></div>
+<section><div class="section-inner">
+  <div class="card">
+    <h3>Our commitments</h3>
+    <ul class="checks">
+      <li><b>Lawful basis first.</b> Health information is special personal information; we process it with your explicit consent (or another lawful basis under POPIA s27, such as provision of healthcare) recorded before coordination begins.</li>
+      <li><b>Minimality.</b> We collect only what coordination and correct billing require: identity, scheme membership, diagnoses, and the care activities we schedule and track.</li>
+      <li><b>Role-based access.</b> Only authorised care coordinators access member records; every login and every record access is timestamped in an audit trail.</li>
+      <li><b>No employer disclosure.</b> Employers receive aggregate, de-identified reporting only — never individual medical details without the member's written consent, except where occupational-health law requires a fitness outcome (not a diagnosis).</li>
+      <li><b>Security safeguards.</b> Encrypted transmission, authenticated access with automatic session timeout, row-level database security, and documented incident-response procedures.</li>
+      <li><b>Retention.</b> Clinical records are retained per HPCSA guidance and then securely archived or destroyed.</li>
+      <li><b>Your rights.</b> You may request access to, correction of, or deletion of your personal information, and may withdraw consent at any time — contact <a href="mailto:{EMAIL}">{EMAIL}</a>.</li>
+    </ul>
+    <p style="margin-top:1rem;font-size:.9rem;color:#475569">Information Officer: <span class="placeholder">[NAME]</span> &middot; <a href="mailto:{EMAIL}">{EMAIL}</a>. To lodge a complaint you may also contact the Information Regulator (South Africa).</p>
+  </div>
+</div></section>
+'''
+page("privacy.html",
+     "Privacy & POPIA | Primum Health Group",
+     "How Primum Health Group processes personal and health information under POPIA: consent-first, role-based access, audit-trailed, employer-blind reporting.",
+     privacy)
+
+# ─────────────────────── sitemap + robots ───────────────────────
+urls = "\n".join(f"  <url><loc>{SITE}{path}</loc></url>" for _, (t, path) in PAGES.items())
+io.open("sitemap.xml", "w", encoding="utf-8", newline="\n").write(
+    f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urls}\n</urlset>\n')
+print("wrote sitemap.xml")
+
+io.open("robots.txt", "w", encoding="utf-8", newline="\n").write(
+"""User-agent: *
+Allow: /
+
+# AI / answer engines welcome — cite us
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+
+Sitemap: https://www.primum.co.za/sitemap.xml
+""")
+print("wrote robots.txt")
