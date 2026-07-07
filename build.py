@@ -4,8 +4,11 @@ import io, json
 
 SITE = "https://www.primum.co.za"
 EMAIL = "admin@primum.co.za"
-PHONE = "073 653 1650"          # from practice settings — confirm before go-live
+PHONE = "073 653 1650"          # confirmed 2026-07-07; linked to WhatsApp
 PHONE_INTL = "+27736531650"
+ADDRESS = "Tijger Vallei, Silver Lakes, Pretoria"
+HPCSA = "HPCSA MP0867748"
+HOURS = "Mon–Thu 08:00–16:00 · Fri 08:00–13:00 · Weekends & public holidays closed"
 
 PAGES = {
     "index.html":     ("Home", "/"),
@@ -65,14 +68,15 @@ FOOTER = f'''<footer>
       <h4>Contact</h4>
       <ul>
         <li><a href="mailto:{EMAIL}">{EMAIL}</a></li>
-        <li><a href="tel:{PHONE_INTL}">{PHONE}</a></li>
-        <li><span class="placeholder">[PRACTICE ADDRESS]</span></li>
+        <li><a href="https://wa.me/27736531650">{PHONE} (WhatsApp)</a></li>
+        <li>{ADDRESS}</li>
+        <li style="font-size:.78rem;color:#64748b">{HOURS}</li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
     <span>&copy; 2026 Primum Health Group. All rights reserved.</span>
-    <span>Registered healthcare practice &middot; <span class="placeholder">[HPCSA / PRACTICE NO]</span> &middot; POPIA compliant</span>
+    <span>Registered healthcare practice &middot; {HPCSA} &middot; POPIA compliant</span>
   </div>
 </footer>'''
 
@@ -116,6 +120,18 @@ ORG_LD = {
   "logo": f"{SITE}/assets/logo.jpg",
   "email": EMAIL,
   "telephone": PHONE_INTL,
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Tijger Vallei, Silver Lakes",
+    "addressLocality": "Pretoria",
+    "addressRegion": "Gauteng",
+    "addressCountry": "ZA"
+  },
+  "openingHoursSpecification": [
+    {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "08:00", "closes": "16:00"},
+    {"@type": "OpeningHoursSpecification", "dayOfWeek": "Friday", "opens": "08:00", "closes": "13:00"}
+  ],
+  "founder": {"@type": "Person", "name": "Dr A Nazo", "jobTitle": "Founder & Principal Practitioner", "identifier": "HPCSA MP0867748"},
   "areaServed": "ZA",
   "description": "South African occupational-health and care-coordination practice. We manage employee and patient populations for employers, medical practices and schemes — turning each member's actual medical-aid benefits into a scheduled, billable year plan of care.",
   "medicalSpecialty": ["Occupational medicine", "Preventive medicine", "Community health"],
@@ -309,8 +325,10 @@ about = f'''
   <div class="grid grid-2">
     <div class="card"><h3>What we believe</h3><p>Benefits without coordination are promises without delivery. A member with diabetes is entitled by law to structured chronic care; a 50-year-old is entitled to cancer screening; an injured worker is entitled to a properly managed COIDA claim. Our job is to make entitlement become appointment — scheduled, delivered, correctly billed.</p></div>
     <div class="card"><h3>How we work</h3><p>Our own care-coordination platform understands the benefit rules of South Africa's major schemes and options, generates a year plan per member, and produces claim-ready referrals for treating providers. Clinical pathways follow published guidelines (ERAS, NCCN/ESMO); billing follows verified tariff conventions; data handling follows POPIA.</p></div>
-    <div class="card"><h3>Leadership</h3><p><span class="placeholder">[FOUNDER NAME &amp; QUALIFICATIONS]</span> — <span class="placeholder">[SHORT BIO: registration, experience, special interests]</span></p></div>
-    <div class="card"><h3>Credentials</h3><ul class="checks"><li>Registered practice: <span class="placeholder">[HPCSA / BHF PRACTICE NO]</span></li><li>POPIA-compliant systems: role-based access, audit trail, consent-first</li><li>Schemes worked with: Discovery, Bonitas, GEMS, Polmed, Momentum, Medshield, Affinity</li></ul></div>
+    <div class="card"><h3>Leadership — Dr A Nazo, Founder &amp; Principal Practitioner</h3>
+      <p>Dr Nazo built Primum on a conviction formed in Eastern Cape communities where care too often arrived late or not at all: <b>our clients are the heroes of this story</b> — the employer protecting a workforce, the practice carrying a patient community, the funder stretching every benefit rand, the member facing a diagnosis. They don't need rescuing; they need a capable guide. Primum exists to be that guide — the plan, the coordination and the follow-through that let our clients win.</p>
+      <p style="margin-top:.7rem">In practice that means speaking each client's language: OHSA and COIDA compliance for employers, sustainable practice economics for doctors, value-based outcomes and clean claims for funders, and dignity for every member — with accountability in writing for the care that follows. <span style="color:#64748b">HPCSA MP0867748.</span></p></div>
+    <div class="card"><h3>Credentials</h3><ul class="checks"><li>Registered practitioner: {HPCSA}</li><li>Practice: {ADDRESS}</li><li>POPIA-compliant systems: role-based access, audit trail, consent-first</li><li>Schemes worked with: Discovery, Bonitas, GEMS, Polmed, Momentum, Medshield, Affinity</li></ul></div>
   </div>
 </div></section>
 '''
@@ -329,8 +347,8 @@ contact = f'''
       <ul class="checks">
         <li>Email: <a href="mailto:{EMAIL}"><b>{EMAIL}</b></a></li>
         <li>Phone / WhatsApp: <a href="https://wa.me/27736531650"><b>{PHONE}</b></a></li>
-        <li>Practice address: <span class="placeholder">[PRACTICE ADDRESS + CITY]</span></li>
-        <li>Hours: <span class="placeholder">[e.g. Mon–Fri 08:00–17:00]</span></li>
+        <li>Practice address: <b>{ADDRESS}</b></li>
+        <li>Hours: {HOURS}</li>
       </ul>
       <p style="margin-top:.9rem;font-size:.85rem;color:#64748b">Existing coordination clients: your care coordinator remains your first contact.</p>
     </div>
@@ -366,7 +384,7 @@ privacy = f'''
       <li><b>Retention.</b> Clinical records are retained per HPCSA guidance and then securely archived or destroyed.</li>
       <li><b>Your rights.</b> You may request access to, correction of, or deletion of your personal information, and may withdraw consent at any time — contact <a href="mailto:{EMAIL}">{EMAIL}</a>.</li>
     </ul>
-    <p style="margin-top:1rem;font-size:.9rem;color:#475569">Information Officer: <span class="placeholder">[NAME]</span> &middot; <a href="mailto:{EMAIL}">{EMAIL}</a>. To lodge a complaint you may also contact the Information Regulator (South Africa).</p>
+    <p style="margin-top:1rem;font-size:.9rem;color:#475569">Information Officer: Dr A Nazo &middot; <a href="mailto:{EMAIL}">{EMAIL}</a>. To lodge a complaint you may also contact the Information Regulator (South Africa).</p>
   </div>
 </div></section>
 '''

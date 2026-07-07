@@ -59,10 +59,12 @@ nav.main-nav a.cta:hover { background: var(--gold-soft); }
 /* ── Hero ───────────────────────────────────────── */
 .hero {
   background:
+    url('hero-ec.svg') bottom center / cover no-repeat,
     radial-gradient(1200px 500px at 15% -10%, rgba(212,168,42,.18), transparent 60%),
     linear-gradient(160deg, var(--navy-700) 0%, var(--navy-900) 75%);
-  color: #fff; padding: 4.2rem 1.25rem 4.6rem;
+  color: #fff; padding: 4.2rem 1.25rem 9.5rem;
 }
+.hero h1, .hero p.lead { text-shadow: 0 2px 12px rgba(16,20,31,.55); }
 .hero-inner { max-width: var(--max); margin: 0 auto; }
 .hero .kicker {
   display: inline-block; font-size: .7rem; font-weight: 700; text-transform: uppercase;
