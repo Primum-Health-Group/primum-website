@@ -134,7 +134,7 @@ def page(fname, title, desc, body, jsonld=None, active=None):
 <meta name="geo.placename" content="Pretoria">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/styles.css">
 {ld}
 </head>
@@ -196,7 +196,7 @@ home_faqs = [
   ("What is care coordination?",
    "Care coordination means one accountable team makes sure every patient actually receives the care they are due — the right screenings for their age and gender, the right chronic-disease check-ups for their conditions, at the right time — and that every visit is billed correctly to the medical scheme benefit that must pay for it, not the member's pocket."),
   ("Who does Primum work with?",
-   "Employers who need occupational health and employee wellness; GP and specialist practices who want their patient base proactively managed; medical schemes, health insurers and other healthcare funders seeking managed care — active chronic disease management, prevention programmes and population health management with coordination across providers; and the members themselves."),
+   "Employers who need occupational health and employee wellness; GP and specialist practices who want their patient base proactively managed; medical schemes, health insurers and other healthcare funders seeking managed care — active disease management including oncology, prevention programmes and population health management with coordination across providers; and the members themselves."),
 ]
 home = f'''
 <section class="hero">
@@ -220,7 +220,7 @@ home = f'''
     <div class="grid grid-2">
       <div class="card"><span class="tag">You, the employer</span><h3>You protect a workforce. We arm you for it.</h3><p>You answer for every fitness certificate, every injury on duty, every incapacity case. We give you medicals, surveillance, COIDA claims handled end to end, and a wellness programme your auditors and your people both respect.</p><ul class="checks"><li>Fitness certificates &amp; risk-based surveillance</li><li>COIDA compliance and claims, end to end</li><li>Absenteeism &amp; incapacity, defensibly managed</li></ul><p style="margin-top:.8rem"><a href="employers.html"><b>For employers →</b></a></p></div>
       <div class="card"><span class="tag">You, the doctor</span><h3>You carry the patients. We carry the coordination.</h3><p>You became a doctor to treat people — not to chase recalls and decode benefit rules. We tell you who is due, for what, with the exact tariff and ICD-10 codes ready for your billing system.</p><ul class="checks"><li>Year plans per patient, by age, gender &amp; diagnosis</li><li>Claim-ready referrals — tariff + ICD-10 in claim order</li><li>Recalls, reminders and results follow-up handled</li></ul><p style="margin-top:.8rem"><a href="practices.html"><b>For practices →</b></a></p></div>
-      <div class="card"><span class="tag">You, the funder</span><h3>You fund the cover. We turn it into care.</h3><p>For medical schemes, health insurers and other healthcare funders we run managed care that actually lands: active chronic-disease management, prevention programmes, and population-health management with care coordination across providers.</p><ul class="checks"><li>Active chronic disease management (CDL and beyond)</li><li>Prevention &amp; screening programmes members actually use</li><li>Population health management — coordinated across providers</li></ul><p style="margin-top:.8rem"><a href="schemes.html"><b>For schemes &amp; insurers →</b></a></p></div>
+      <div class="card"><span class="tag">You, the funder</span><h3>You fund the cover. We turn it into care.</h3><p>For medical schemes, health insurers and other healthcare funders we run managed care that actually lands: active chronic-disease management, prevention programmes, and population-health management with care coordination across providers.</p><ul class="checks"><li>Active disease management — chronic (CDL) and oncology</li><li>Prevention &amp; screening programmes members actually use</li><li>Population health management — coordinated across providers</li></ul><p style="margin-top:.8rem"><a href="schemes.html"><b>For schemes &amp; insurers →</b></a></p></div>
       <div class="card"><span class="tag">You &amp; your family</span><h3>You look after everyone else. Who's watching your health?</h3><p>Serious illness rarely announces itself in time. We watch for you and your dependants — screenings on schedule, chronic conditions controlled, problems caught while they're still small.</p><ul class="checks"><li>Your plan's benefits, actually used</li><li>Your dependants covered — children to grandparents</li><li>Cancer support before, during and after treatment</li></ul><p style="margin-top:.8rem"><a href="members.html"><b>For members →</b></a></p></div>
     </div>
 
@@ -309,7 +309,7 @@ page("practices.html",
 # ─────────────────────── SCHEMES ───────────────────────
 sc_faqs = [
   ("What managed-care services does Primum provide to funders?",
-   "Four core services for medical schemes, health insurers and other healthcare funders: active chronic disease management (members managed to protocol, not just registered), prevention and screening programmes that members actually use, population health management across your book, and care coordination across the providers who treat your members."),
+   "Four core services for medical schemes, health insurers and other healthcare funders: active disease management including oncology (members managed to protocol, not just registered), prevention and screening programmes that members actually use, population health management across your book, and care coordination across the providers who treat your members."),
   ("How does coordination help a scheme or insurer?",
    "Members who receive their preventive screenings and structured chronic care cost less over time and claim more correctly. We drive utilisation of the benefits you already fund — screening baskets, chronic programmes, oncology benefits — with PMB-correct coding that keeps claims clean."),
   ("What is PMB-correct claiming?",
@@ -318,13 +318,13 @@ sc_faqs = [
    "No — we provide managed care for medical schemes, health insurance products and other healthcare funders: employer self-funded arrangements, bargaining-council funds and administrators. The coordination model adapts to each funding environment."),
 ]
 schemes = f'''
-<div class="page-hero"><div class="section-inner"><h1>Managed care for medical schemes, health insurers &amp; healthcare funders</h1><p>You fund the cover. We turn it into care: active chronic disease management, prevention programmes, and population health management with care coordination across providers — so benefit design becomes member outcomes.</p></div></div>
+<div class="page-hero"><div class="section-inner"><h1>Managed care for medical schemes, health insurers &amp; healthcare funders</h1><p>You fund the cover. We turn it into care: active disease management including oncology, prevention programmes, and population health management with care coordination across providers — so benefit design becomes member outcomes.</p></div></div>
 <section><div class="section-inner">
   <div class="grid grid-2">
-    <div class="card"><span class="tag">Managed care</span><h3>Active chronic disease management</h3><p>Not a register — a programme. Every chronic member managed to protocol: the right visits, the right tests, at the right cadence, with correct combination coding and DSP alignment. All 27 PMB CDL conditions plus scheme-specific extended lists.</p></div>
+    <div class="card"><span class="tag">Managed care</span><h3>Active disease management — including oncology</h3><p>Not a register — a programme. Every member managed to protocol: all 27 PMB CDL chronic conditions plus scheme-specific extended lists, and oncology disease management with ERAS-aligned prehabilitation, rehabilitation and five-year surveillance pathways. Right visits, right tests, right cadence — correctly coded, DSP-aligned.</p></div>
     <div class="card"><span class="tag">Prevention</span><h3>Prevention programmes that get used</h3><p>Age- and gender-appropriate screening scheduled for every eligible member — mammography, cervical, colorectal, PSA, HIV, wellness checks — against each option's actual benefit rules. Utilisation, not wastage.</p></div>
     <div class="card"><span class="tag">Population health</span><h3>Population health management</h3><p>Your whole book, stratified and managed: prevention for the well, structured care for the chronic, pathways for the acutely ill — with reporting that shows movement, not just membership.</p></div>
-    <div class="card"><span class="tag">Coordination</span><h3>Care coordination across providers</h3><p>GPs, specialists, pathology, radiology, allied health — your member's care joined up across all of them, referrals claim-ready, results followed through. Includes ERAS-aligned oncology prehab, rehab and five-year surveillance pathways.</p></div>
+    <div class="card"><span class="tag">Coordination</span><h3>Care coordination across providers</h3><p>GPs, specialists, pathology, radiology, allied health — your member's care joined up across all of them, referrals claim-ready with tariff and ICD-10 codes, results followed through to closure.</p></div>
   </div>
   <div class="cta-strip"><div><h3>Pilot a population with us</h3><p>Pick a cohort — an employer group or a chronic register — and measure the difference.</p></div><a class="btn btn-navy" href="contact.html">Start the conversation</a></div>
   <h2 class="section-title" style="margin-top:2.6rem">Funder questions</h2>
@@ -333,7 +333,7 @@ schemes = f'''
 '''
 page("schemes.html",
      "Managed Care for Medical Schemes & Health Insurers | Primum Health Group",
-     "Managed care for medical schemes, health insurers and healthcare funders: active chronic disease management, prevention programmes, population health management and care coordination across providers.",
+     "Managed care for medical schemes, health insurers and healthcare funders: active disease management including oncology, prevention programmes, population health management and care coordination across providers.",
      schemes, [faq_ld(sc_faqs)])
 
 # ─────────────────────── MEMBERS ───────────────────────

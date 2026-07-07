@@ -19,7 +19,7 @@
   --radius: 18px;
   --shadow-sm: 0 1px 3px rgba(38,33,20,.07);
   --shadow-lg: 0 18px 40px -18px rgba(38,33,20,.38);
-  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --font-text: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
