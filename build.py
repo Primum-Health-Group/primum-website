@@ -14,7 +14,7 @@ PAGES = {
     "index.html":     ("Home", "/"),
     "employers.html": ("For Employers", "/employers.html"),
     "practices.html": ("For Medical Practices", "/practices.html"),
-    "schemes.html":   ("For Schemes & Funders", "/schemes.html"),
+    "schemes.html":   ("For Schemes & Insurers", "/schemes.html"),
     "members.html":   ("For Patients & Members", "/members.html"),
     "about.html":     ("About", "/about.html"),
     "contact.html":   ("Contact", "/contact.html"),
@@ -45,14 +45,15 @@ FOOTER = f'''<footer>
   <div class="footer-inner">
     <div>
       <h4>Primum Health Group</h4>
-      <p>Occupational health and care-coordination practice serving employers, medical practices, schemes and their members across South Africa.</p>
+      <p>Occupational health and care-coordination practice serving employers, medical practices, schemes, insurers and their members across South Africa.</p>
+      <p class="tagline-sm">We turn cover into care.</p>
     </div>
     <div>
       <h4>Who we serve</h4>
       <ul>
         <li><a href="employers.html">Employers</a></li>
         <li><a href="practices.html">Medical practices</a></li>
-        <li><a href="schemes.html">Schemes &amp; funders</a></li>
+        <li><a href="schemes.html">Schemes, insurers &amp; funders</a></li>
         <li><a href="members.html">Patients &amp; members</a></li>
       </ul>
     </div>
@@ -195,7 +196,7 @@ home_faqs = [
   ("What is care coordination?",
    "Care coordination means one accountable team makes sure every patient actually receives the care they are due — the right screenings for their age and gender, the right chronic-disease check-ups for their conditions, at the right time — and that every visit is billed correctly to the medical scheme benefit that must pay for it, not the member's pocket."),
   ("Who does Primum work with?",
-   "Employers who need occupational health and employee wellness; GP and specialist practices who want their patient base proactively managed; medical schemes and funders seeking better benefit utilisation and outcomes; and the members themselves."),
+   "Employers who need occupational health and employee wellness; GP and specialist practices who want their patient base proactively managed; medical schemes, health insurers and other healthcare funders seeking managed care — active chronic disease management, prevention programmes and population health management with coordination across providers; and the members themselves."),
 ]
 home = f'''
 <section class="hero">
@@ -207,6 +208,7 @@ home = f'''
       <a class="btn btn-gold" href="contact.html">Talk to us</a>
       <a class="btn btn-ghost" href="#how">How it works</a>
     </div>
+    <p class="tagline">Cover is not care. We turn cover into care.</p>
   </div>
 </section>
 
@@ -218,13 +220,13 @@ home = f'''
     <div class="grid grid-2">
       <div class="card"><span class="tag">You, the employer</span><h3>You protect a workforce. We arm you for it.</h3><p>You answer for every fitness certificate, every injury on duty, every incapacity case. We give you medicals, surveillance, COIDA claims handled end to end, and a wellness programme your auditors and your people both respect.</p><ul class="checks"><li>Fitness certificates &amp; risk-based surveillance</li><li>COIDA compliance and claims, end to end</li><li>Absenteeism &amp; incapacity, defensibly managed</li></ul><p style="margin-top:.8rem"><a href="employers.html"><b>For employers →</b></a></p></div>
       <div class="card"><span class="tag">You, the doctor</span><h3>You carry the patients. We carry the coordination.</h3><p>You became a doctor to treat people — not to chase recalls and decode benefit rules. We tell you who is due, for what, with the exact tariff and ICD-10 codes ready for your billing system.</p><ul class="checks"><li>Year plans per patient, by age, gender &amp; diagnosis</li><li>Claim-ready referrals — tariff + ICD-10 in claim order</li><li>Recalls, reminders and results follow-up handled</li></ul><p style="margin-top:.8rem"><a href="practices.html"><b>For practices →</b></a></p></div>
-      <div class="card"><span class="tag">You, the funder</span><h3>You designed the benefits. We make them land.</h3><p>Your screening baskets, chronic programmes and oncology benefits only create value when members actually use them — correctly coded. That's precisely what coordination delivers.</p><ul class="checks"><li>PMB / CDL coordination across 7+ scheme groups</li><li>Screening-basket utilisation, not wastage</li><li>ERAS-aligned oncology prehab &amp; rehab pathways</li></ul><p style="margin-top:.8rem"><a href="schemes.html"><b>For schemes →</b></a></p></div>
+      <div class="card"><span class="tag">You, the funder</span><h3>You fund the cover. We turn it into care.</h3><p>For medical schemes, health insurers and other healthcare funders we run managed care that actually lands: active chronic-disease management, prevention programmes, and population-health management with care coordination across providers.</p><ul class="checks"><li>Active chronic disease management (CDL and beyond)</li><li>Prevention &amp; screening programmes members actually use</li><li>Population health management — coordinated across providers</li></ul><p style="margin-top:.8rem"><a href="schemes.html"><b>For schemes &amp; insurers →</b></a></p></div>
       <div class="card"><span class="tag">You &amp; your family</span><h3>You look after everyone else. Who's watching your health?</h3><p>Serious illness rarely announces itself in time. We watch for you and your dependants — screenings on schedule, chronic conditions controlled, problems caught while they're still small.</p><ul class="checks"><li>Your plan's benefits, actually used</li><li>Your dependants covered — children to grandparents</li><li>Cancer support before, during and after treatment</li></ul><p style="margin-top:.8rem"><a href="members.html"><b>For members →</b></a></p></div>
     </div>
 
     <div class="band">
       <div class="stat"><b>27 chronic conditions</b><span>PMB Chronic Disease List coordinated, plus scheme-specific extended lists</span></div>
-      <div class="stat"><b>7+ scheme groups</b><span>Discovery, Bonitas, GEMS, Polmed, Momentum, Medshield, Affinity</span></div>
+      <div class="stat"><b>Schemes · insurers · funders</b><span>Managed care for medical schemes, health insurance products and other healthcare funders — Discovery, Bonitas, GEMS, Polmed, Momentum, Medshield, Affinity and more</span></div>
       <div class="stat"><b>Billing-code ready</b><span>Every activity carries the tariff code and ICD-10 in claim order</span></div>
       <div class="stat"><b>POPIA compliant</b><span>Role-based access, audit-trailed, consent-first data handling</span></div>
     </div>
@@ -306,18 +308,23 @@ page("practices.html",
 
 # ─────────────────────── SCHEMES ───────────────────────
 sc_faqs = [
-  ("How does coordination help a scheme or funder?",
-   "Members who receive their preventive screenings and structured chronic care cost less over time and claim more correctly. We drive utilisation of the benefits schemes already fund — screening baskets, chronic programmes, oncology benefits — with PMB-correct coding that keeps claims clean."),
+  ("What managed-care services does Primum provide to funders?",
+   "Four core services for medical schemes, health insurers and other healthcare funders: active chronic disease management (members managed to protocol, not just registered), prevention and screening programmes that members actually use, population health management across your book, and care coordination across the providers who treat your members."),
+  ("How does coordination help a scheme or insurer?",
+   "Members who receive their preventive screenings and structured chronic care cost less over time and claim more correctly. We drive utilisation of the benefits you already fund — screening baskets, chronic programmes, oncology benefits — with PMB-correct coding that keeps claims clean."),
   ("What is PMB-correct claiming?",
    "Prescribed Minimum Benefit conditions must by law be funded from scheme risk. We ensure every chronic and oncology claim carries the PMB ICD-10 code in the primary position, so claims route correctly the first time — fewer rejections, fewer member complaints, cleaner data."),
+  ("Do you only work with medical schemes?",
+   "No — we provide managed care for medical schemes, health insurance products and other healthcare funders: employer self-funded arrangements, bargaining-council funds and administrators. The coordination model adapts to each funding environment."),
 ]
 schemes = f'''
-<div class="page-hero"><div class="section-inner"><h1>Benefit utilisation you designed — actually delivered</h1><p>Screening baskets used, chronic members managed, oncology pathways followed, claims coded correctly. Coordination turns benefit design into member outcomes.</p></div></div>
+<div class="page-hero"><div class="section-inner"><h1>Managed care for medical schemes, health insurers &amp; healthcare funders</h1><p>You fund the cover. We turn it into care: active chronic disease management, prevention programmes, and population health management with care coordination across providers — so benefit design becomes member outcomes.</p></div></div>
 <section><div class="section-inner">
-  <div class="grid grid-3">
-    <div class="card"><span class="tag">Prevention</span><h3>Screening-basket utilisation</h3><p>Age- and gender-appropriate screening scheduled for every eligible member — mammography, cervical, colorectal, PSA, HIV, wellness checks — against each option's actual benefit rules.</p></div>
-    <div class="card"><span class="tag">Chronic</span><h3>CDL &amp; extended chronic care</h3><p>All 27 PMB chronic conditions plus scheme-specific extended lists, managed to protocol with correct combination coding and DSP alignment.</p></div>
-    <div class="card"><span class="tag">Oncology</span><h3>Structured cancer pathways</h3><p>ERAS-aligned prehabilitation and rehabilitation around treatment, plus guideline-cadence surveillance (markers, imaging, scopes) for five years — coordinated, coded, auditable.</p></div>
+  <div class="grid grid-2">
+    <div class="card"><span class="tag">Managed care</span><h3>Active chronic disease management</h3><p>Not a register — a programme. Every chronic member managed to protocol: the right visits, the right tests, at the right cadence, with correct combination coding and DSP alignment. All 27 PMB CDL conditions plus scheme-specific extended lists.</p></div>
+    <div class="card"><span class="tag">Prevention</span><h3>Prevention programmes that get used</h3><p>Age- and gender-appropriate screening scheduled for every eligible member — mammography, cervical, colorectal, PSA, HIV, wellness checks — against each option's actual benefit rules. Utilisation, not wastage.</p></div>
+    <div class="card"><span class="tag">Population health</span><h3>Population health management</h3><p>Your whole book, stratified and managed: prevention for the well, structured care for the chronic, pathways for the acutely ill — with reporting that shows movement, not just membership.</p></div>
+    <div class="card"><span class="tag">Coordination</span><h3>Care coordination across providers</h3><p>GPs, specialists, pathology, radiology, allied health — your member's care joined up across all of them, referrals claim-ready, results followed through. Includes ERAS-aligned oncology prehab, rehab and five-year surveillance pathways.</p></div>
   </div>
   <div class="cta-strip"><div><h3>Pilot a population with us</h3><p>Pick a cohort — an employer group or a chronic register — and measure the difference.</p></div><a class="btn btn-navy" href="contact.html">Start the conversation</a></div>
   <h2 class="section-title" style="margin-top:2.6rem">Funder questions</h2>
@@ -325,8 +332,8 @@ schemes = f'''
 </div></section>
 '''
 page("schemes.html",
-     "Care Coordination for Medical Schemes & Funders | Primum Health Group",
-     "PMB-correct claiming, screening-benefit utilisation and structured chronic and oncology pathways that improve member outcomes and claims quality.",
+     "Managed Care for Medical Schemes & Health Insurers | Primum Health Group",
+     "Managed care for medical schemes, health insurers and healthcare funders: active chronic disease management, prevention programmes, population health management and care coordination across providers.",
      schemes, [faq_ld(sc_faqs)])
 
 # ─────────────────────── MEMBERS ───────────────────────
@@ -380,7 +387,7 @@ about = f'''
     <div class="card"><h3>Leadership — Dr A Nazo, Founder &amp; Principal Practitioner</h3>
       <p>Dr Nazo built Primum on a conviction formed in Eastern Cape communities where care too often arrived late or not at all: <b>our clients are the heroes of this story</b> — the employer protecting a workforce, the practice carrying a patient community, the funder stretching every benefit rand, the member facing a diagnosis. They don't need rescuing; they need a capable guide. Primum exists to be that guide — the plan, the coordination and the follow-through that let our clients win.</p>
       <p style="margin-top:.7rem">In practice that means speaking each client's language: OHSA and COIDA compliance for employers, sustainable practice economics for doctors, value-based outcomes and clean claims for funders, and dignity for every member — with accountability in writing for the care that follows. <span style="color:#64748b">HPCSA MP0867748.</span></p></div>
-    <div class="card"><h3>Credentials</h3><ul class="checks"><li>Registered practitioner: {HPCSA}</li><li>Practice: {ADDRESS}</li><li>POPIA-compliant systems: role-based access, audit trail, consent-first</li><li>Schemes worked with: Discovery, Bonitas, GEMS, Polmed, Momentum, Medshield, Affinity</li></ul></div>
+    <div class="card"><h3>Credentials</h3><ul class="checks"><li>Registered practitioner: {HPCSA}</li><li>Practice: {ADDRESS}</li><li>POPIA-compliant systems: role-based access, audit trail, consent-first</li><li>Funders worked with: Discovery, Bonitas, GEMS, Polmed, Momentum, Medshield, Affinity — among other schemes, insurers and healthcare funders</li></ul></div>
   </div>
 </div></section>
 '''
